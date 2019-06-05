@@ -26,17 +26,17 @@ function TJBot(hardware, configuration, credentials) {
   this._conversationContext = {};
   this._sttStream = null;
   this._ttsVoices = [];
+  
   if(this.hardware.indexOf("camera") !== -1) {
     this._setupCamera = new Promise((resolve, reject) => {
-        var v = document.getElementById("videoElement");
+        var v = document.querySelector("#videoElement");
+        console.log(v)
         if(!v) {
-          $("#cameratab").append('<video autoplay id="videoElement" width="100" height="75"></video><canvas id="canvas" width="200" height="150" style="display:none"></canvas>');
           var v = document.getElementById("videoElement");
           v.ready = false;
+
           // check for getUserMedia support
           //navigator.getUserMedia = navigator.mediaDevices.getUserMedia;// || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
-
-
           if (navigator.mediaDevices.getUserMedia) {
               // get webcam feed if available
               navigator.mediaDevices.getUserMedia({video: true,audio:false}).then((stream) => {
@@ -51,8 +51,7 @@ function TJBot(hardware, configuration, credentials) {
               console.log(e);
             });
           }
-          else
-          {
+          else{
             reject("browser not support");
           }
         } else {
@@ -60,9 +59,6 @@ function TJBot(hardware, configuration, credentials) {
         }
       });
   }
-
-  var self = this;
-
   if(this.hardware.indexOf("camera") != -1) {
     this._setupCamera;
   }
@@ -358,7 +354,8 @@ TJBot.prototype.see = function(cb) {
       contentType: "application/json",
       data: JSON.stringify({
         creds: {
-          api_key: this.credentials.visual_recognition.api_key
+          iam_apikey: this.credentials.visual_recognition.iam_apikey,
+          iam_url: this.credentials.visual_recognition.iam_url
         },
         image: uri
       })

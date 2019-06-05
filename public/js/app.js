@@ -20,6 +20,27 @@
 */
 
 $().ready(function() {
+
+  var env_var_template  = "CONVERSATION_USERNAME="
+  +"\nCONVERSATION_PASSWORD="
+  +"\nCONVERSATION_WORKSPACE_ID="
+  +"\nLANGUAGE_TRANSLATOR_USERNAME="
+  +"\nLANGUAGE_TRANSLATOR_PASSWORD="
+  +"\nSPEECH_TO_TEXT_USERNAME="
+  +"\nSPEECH_TO_TEXT_PASSWORD="
+  +"\nTEXT_TO_SPEECH_USERNAME="
+  +"\nTEXT_TO_SPEECH_PASSWORD="
+  +"\nTONE_ANALYZER_USERNAME="
+  +"\nTONE_ANALYZER_PASSWORD="
+  +"\nVISUAL_RECOGNITION_API_KEY=";
+
+  var env_vars = localStorage.getItem('env_vars')
+  if (env_vars){
+    $("#envcode").val(env_vars)
+  }else{
+    $('#envcode').val(env_var_template)
+  }
+
   // Store the code locally so when we come back/refresh the page, the code still exists.
   var code = localStorage.getItem("code");
   if(code) {
@@ -122,7 +143,10 @@ $().ready(function() {
     });
   
     $("#runcode").click(function() {
+      
       localStorage.setItem("code", codeEditor.getValue());
+      localStorage.setItem("env_vars", envEditor.getValue())
+
       $(".inspector").remove();
       $("#tjbot").tab("show")
       var penv = "var process = {env:{"+
@@ -158,8 +182,12 @@ $().ready(function() {
   
       var check = "try { window.codeCheck(1);";
       var catchIt = "} catch(e) { console.log(e.toString());}";
-      var f = new Function(check+"\n"+penv+"\n"+codeEditor.getValue()+"\n"+catchIt);
-  
+      
+      var codeString = codeEditor.getValue();
+
+      var functionString = check+"\n"+penv+"\n"+codeString+"\n"+catchIt;
+
+      var f = new Function(functionString);
       f();
     });
   

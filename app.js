@@ -16,8 +16,7 @@
  *   distributed under the License is distributed on an "AS IS" BASIS,
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
- ****************************************************************************
-*/
+ *****************************************************************************/
 
 var cfenv = require("cfenv");
 var appEnv = cfenv.getAppEnv()
@@ -26,9 +25,9 @@ var bodyParser = require("body-parser");
 var app = express();
 
 app.use(express.static("public"));
-app.use(bodyParser({limit: "50mb"}));
+app.use(bodyParser({ limit: "50mb" }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 function getTTSToken(creds) {
   return new Promise((resolve, reject) => {
@@ -41,8 +40,8 @@ function getTTSToken(creds) {
     });
 
     authorization.getToken(function (err, token) {
-      if(!token) {
-        reject({err:err});
+      if (!token) {
+        reject({ err: err });
       } else {
         const TextToSpeechV1 = require("watson-developer-cloud/text-to-speech/v1");
         const textToSpeech = new TextToSpeechV1(
@@ -52,11 +51,11 @@ function getTTSToken(creds) {
           }
         );
 
-        textToSpeech.voices({}, function(err, voices) {
-          if(err) {
-            reject({err:err});
+        textToSpeech.voices({}, function (err, voices) {
+          if (err) {
+            reject({ err: err });
           }
-          resolve({token:token,voices:voices});
+          resolve({ token: token, voices: voices });
         });
       }
     });
@@ -75,9 +74,9 @@ function getSSTToken(creds) {
 
     authorization.getToken(function (err, token) {
       if (!token) {
-        reject({err:err});
+        reject({ err: err });
       } else {
-        resolve({token:token});
+        resolve({ token: token });
       }
     });
   });
@@ -89,24 +88,24 @@ function getSSTToken(creds) {
  * @param {string} creds.username username of the Watson TTS or STT service
  * @param {string} creds.password password of the Watson TTS or STT service
  */
-app.post("/api/get_token", function(req, res) {
-  switch(req.body.type) {
+app.post("/api/get_token", function (req, res) {
+  switch (req.body.type) {
     case "tts":
       getTTSToken({
         username: req.body.creds.username,
         password: req.body.creds.password
       }).then(result => {
-        res.send({tts: result.token, voices: result.voices});
+        res.send({ tts: result.token, voices: result.voices });
       });
-    break;
+      break;
     case "stt":
       getSSTToken({
         username: req.body.creds.username,
         password: req.body.creds.password
       }).then(token => {
-        res.send({stt: token.token});
+        res.send({ stt: token.token });
       });
-    break;
+      break;
   }
 })
 
@@ -117,21 +116,21 @@ app.post("/api/get_token", function(req, res) {
  * @param {string} creds.password password of the Watson Tone Analyzer service
  * @param {string} text text to analyze for emotion
  */
-app.post("/api/analyze_tone", function(req, res) {
+app.post("/api/analyze_tone", function (req, res) {
   try {
-    if(!req.body.creds || typeof req.body.creds !== "object") {
+    if (!req.body.creds || typeof req.body.creds !== "object") {
       throw new Error("Missing required parameters: creds");
     }
 
-    if(!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
+    if (!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
       throw new Error("Missing required parameter: username");
     }
 
-    if(!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
+    if (!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
       throw new Error("Missing required parameter: password");
     }
 
-    if(!req.body.text || typeof req.body.text !== "string" || req.body.text.length == 0) {
+    if (!req.body.text || typeof req.body.text !== "string" || req.body.text.length == 0) {
       throw new Error("Missing required parameter: text");
     }
 
@@ -142,15 +141,15 @@ app.post("/api/analyze_tone", function(req, res) {
       version_date: "2016-05-19"
     });
 
-    tone_analyzer.tone({ text: req.body.text }, function(err, tone) {
-      if(err) {
+    tone_analyzer.tone({ text: req.body.text }, function (err, tone) {
+      if (err) {
         throw new Error(err.toString());
       } else {
         res.send(tone);
       }
     });
-  } catch(e) {
-    res.send({"err": e.toString()});
+  } catch (e) {
+    res.send({ "err": e.toString() });
   }
 });
 
@@ -163,29 +162,29 @@ app.post("/api/analyze_tone", function(req, res) {
  * @param {string} targetLanguage language code representing language text is translated to
  * @param {string} text text to translate for emotion
  */
-app.post("/api/translate", function(req, res) {
+app.post("/api/translate", function (req, res) {
   try {
-    if(!req.body.creds || typeof req.body.creds !== "object") {
+    if (!req.body.creds || typeof req.body.creds !== "object") {
       throw new Error("Missing required parameters: creds");
     }
 
-    if(!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
+    if (!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
       throw new Error("Missing required parameter: username");
     }
 
-    if(!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
+    if (!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
       throw new Error("Missing required parameter: password");
     }
 
-    if(!req.body.text || typeof req.body.text !== "string" || req.body.text.length == 0) {
+    if (!req.body.text || typeof req.body.text !== "string" || req.body.text.length == 0) {
       throw new Error("Missing required parameter: text");
     }
 
-    if(!req.body.sourceLanguage || typeof req.body.sourceLanguage !== "string" || req.body.text.sourceLanguage == 0) {
+    if (!req.body.sourceLanguage || typeof req.body.sourceLanguage !== "string" || req.body.text.sourceLanguage == 0) {
       throw new Error("Missing required parameter: sourceLanguage");
     }
 
-    if(!req.body.targetLanguage || typeof req.body.targetLanguage !== "string" || req.body.text.targetLanguage == 0) {
+    if (!req.body.targetLanguage || typeof req.body.targetLanguage !== "string" || req.body.text.targetLanguage == 0) {
       throw new Error("Missing required parameter: targetLanguage");
     }
 
@@ -202,16 +201,16 @@ app.post("/api/translate", function(req, res) {
         source: req.body.sourceLanguage,
         target: req.body.targetLanguage
       },
-      function(err, translation) {
-        if(err) {
-          res.send({"err": err.toString()});
+      function (err, translation) {
+        if (err) {
+          res.send({ "err": err.toString() });
         } else {
           res.send(translation);
         }
       }
     );
-  } catch(e) {
-    res.send({"err": e.toString()});
+  } catch (e) {
+    res.send({ "err": e.toString() });
   }
 });
 
@@ -222,21 +221,21 @@ app.post("/api/translate", function(req, res) {
  * @param {string} creds.password password of the Language Translator service
  * @param {string} text text to identify language
  */
-app.post("/api/identifyLanguage", function(req, res) {
+app.post("/api/identifyLanguage", function (req, res) {
   try {
-    if(!req.body.creds || typeof req.body.creds !== "object") {
+    if (!req.body.creds || typeof req.body.creds !== "object") {
       throw new Error("Missing required parameters: creds");
     }
 
-    if(!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
+    if (!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
       throw new Error("Missing required parameter: username");
     }
 
-    if(!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
+    if (!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
       throw new Error("Missing required parameter: password");
     }
 
-    if(!req.body.text || typeof req.body.text !== "string" || req.body.text.length == 0) {
+    if (!req.body.text || typeof req.body.text !== "string" || req.body.text.length == 0) {
       throw new Error("Missing required parameters: text");
     }
 
@@ -251,16 +250,16 @@ app.post("/api/identifyLanguage", function(req, res) {
       {
         text: req.body.text
       },
-      function(err, translation) {
-        if(err) {
-          res.send({err:err.toString()});
+      function (err, translation) {
+        if (err) {
+          res.send({ err: err.toString() });
         } else {
           res.send(translation);
         }
       }
     );
-  } catch(e) {
-    res.send({"err": e.toString()});
+  } catch (e) {
+    res.send({ "err": e.toString() });
   }
 });
 
@@ -274,29 +273,29 @@ app.post("/api/identifyLanguage", function(req, res) {
  * @param {Object} context context object to use when calling service
  * @param {string} text text to translate for emotion
  */
-app.post("/api/converse", function(req, res) {
+app.post("/api/converse", function (req, res) {
   try {
-    if(!req.body.creds || typeof req.body.creds !== "object") {
+    if (!req.body.creds || typeof req.body.creds !== "object") {
       throw new Error("Missing required parameters: creds");
     }
 
-    if(!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
+    if (!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
       throw new Error("Missing required parameter: username");
     }
 
-    if(!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
+    if (!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
       throw new Error("Missing required parameter: password");
     }
 
-    if(!req.body.workspace_id || typeof req.body.workspace_id !== "string" || req.body.workspace_id.length == 0) {
+    if (!req.body.workspace_id || typeof req.body.workspace_id !== "string" || req.body.workspace_id.length == 0) {
       throw new Error("Missing required parameter: workspace_id");
     }
 
-    if(!req.body.input || typeof req.body.input !== "object" || !req.body.input.text || typeof req.body.input.text !== "string" || req.body.input.text.length == 0) {
+    if (!req.body.input || typeof req.body.input !== "object" || !req.body.input.text || typeof req.body.input.text !== "string" || req.body.input.text.length == 0) {
       throw new Error("Missing required parameter: text");
     }
 
-    if(!req.body.context || typeof req.body.context !== "object") {
+    if (!req.body.context || typeof req.body.context !== "object") {
       throw new Error("Missing parameter object: context");
     }
 
@@ -315,15 +314,15 @@ app.post("/api/converse", function(req, res) {
       context: req.body.context
     };
 
-    conversation.message(payload, function(err, data) {
-      if(err) {
-        res.send({"err": err.toString()});
+    conversation.message(payload, function (err, data) {
+      if (err) {
+        res.send({ "err": err.toString() });
       } else {
         res.send(data);
       }
     })
-  } catch(e) {
-    res.send({"err": e.toString()});
+  } catch (e) {
+    res.send({ "err": e.toString() });
   }
 });
 
@@ -333,42 +332,45 @@ app.post("/api/converse", function(req, res) {
  * @param {string} creds.api_key API key of the Visual Recognition service
  * @param {string} image base64 encoded PNG image
  */
-app.post("/api/see", function(req, res) {
+app.post("/api/see", function (req, res) {
   try {
-    if(!req.body.creds || typeof req.body.creds !== "object") {
+    if (!req.body.creds || typeof req.body.creds !== "object") {
       throw new Error("Missing required parameters: creds");
     }
 
-    if(!req.body.creds.api_key || typeof req.body.creds.api_key !== "string" || req.body.creds.api_key.length == 0) {
+    if (!req.body.creds.iam_apikey || typeof req.body.creds.iam_apikey !== "string" || req.body.creds.iam_apikey.length == 0) {
       throw new Error("Missing required parameter: api_key");
     }
 
     const VisualRecognitionV3 = require("watson-developer-cloud/visual-recognition/v3");
     const fs = require("fs");
     const visual_recognition = new VisualRecognitionV3({
-      api_key: req.body.creds.api_key,
-      version_date: VisualRecognitionV3.VERSION_DATE_2016_05_20
+      iam_apikey: req.body.creds.iam_apikey,
+      url: req.body.iam_url,
+      version: '2018-03-19',
+      threshold: 0.0,
+      classifier_ids: req.body.classifier_id ? [req.body.classifier_id] : ["default"]
     });
 
-    var tempFile = "./"+Math.random()+".png";
+    var tempFile = "./" + Math.random() + ".png";
 
-    var image = new Buffer(req.body.image.replace(/^data:image\/png;base64,/,""), "base64");
-    fs.writeFile(tempFile, image,  "binary",function(err) {
+    var image = new Buffer(req.body.image.replace(/^data:image\/png;base64,/, ""), "base64");
+    fs.writeFile(tempFile, image, "binary", function (err) {
       const params = {
         images_file: fs.createReadStream(tempFile)
       };
 
-      visual_recognition.classify(params, function(err, response) {
+      visual_recognition.classify(params, function (err, response) {
         fs.unlinkSync(tempFile);
-        if(err) {
-          res.send({err: err.toString()});
+        if (err) {
+          res.send({ err: err.toString() });
         } else {
           res.send(response.images[0].classifiers[0].classes);
         }
       });
     });
-  } catch(e) {
-    res.send({"err": e.toString()});
+  } catch (e) {
+    res.send({ "err": e.toString() });
   }
 });
 
@@ -382,17 +384,17 @@ app.post("/api/see", function(req, res) {
  * @param {string} params.collection_id collection_id to search
  * @param {Object} params parameters to pass to the query endpoint
  */
-app.post("/api/discovery/query", function(req, res) {
+app.post("/api/discovery/query", function (req, res) {
   try {
-    if(!req.body.creds || typeof req.body.creds !== "object") {
+    if (!req.body.creds || typeof req.body.creds !== "object") {
       throw new Error("Missing required parameters: creds");
     }
 
-    if(!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
+    if (!req.body.creds.username || typeof req.body.creds.username !== "string" || req.body.creds.username.length == 0) {
       throw new Error("Missing required parameter: username");
     }
 
-    if(!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
+    if (!req.body.creds.password || typeof req.body.creds.password !== "string" || req.body.creds.password.length == 0) {
       throw new Error("Missing required parameter: password");
     }
 
@@ -404,21 +406,21 @@ app.post("/api/discovery/query", function(req, res) {
     });
 
     var params = req.body.params;
-    discovery.query(params, function(err, data) {
-      if(err) {
-        res.send({err: err.toString()});
+    discovery.query(params, function (err, data) {
+      if (err) {
+        res.send({ err: err.toString() });
       } else {
         res.json(data);
       }
     });
-  } catch(e) {
-    res.send({"err": e.toString()});
+  } catch (e) {
+    res.send({ "err": e.toString() });
   }
 });
 
 /********************************
 Ports
 ********************************/
-app.listen(appEnv.port, appEnv.bind, function() {
+app.listen(appEnv.port, appEnv.bind, function () {
   console.log("Node server running on " + appEnv.url);
 });

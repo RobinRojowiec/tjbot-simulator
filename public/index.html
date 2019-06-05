@@ -22,105 +22,135 @@
 
 <head>
   <title>TJBot Simulator</title>
-  <script
-		  src="https://code.jquery.com/jquery-3.2.1.min.js"
-		  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-		  crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
-    <script src="codemirror/lib/codemirror.js"></script>
-    <script src="codemirror/mode/javascript/javascript.js"></script>
-    <script src="bower_components/watson-speech/dist/watson-speech.js"></script>
-    <script src="js/tjbot.js"></script>
-    <script src="js/tjbotlistener.js"></script>
-    <script src="js/camera.js"></script>
-    <script src="js/watson.js"></script>
-    <script src="js/app.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <link href="css/editor.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <link href="css/editor.css" rel="stylesheet">
 </head>
+
 <body>
-<div id="editor" style="width:50%; float:left">
-  <ul class="nav nav-tabs" role="tablist" id="editortabs">
-    <li role="presentation" class="active"><a href="#tabcode" aria-controls="home" role="tab" data-toggle="tab">app.js</a></li>
-    <li role="presentation"><a href="#tabenv" aria-controls="home" role="tab" data-toggle="tab">.env</a></li>
-  </ul>
-  <div class="tab-content" id="editortabcontents">
-    <div role="tabpanel" id="tabcode" class="tab-pane active center">
-      <div class="btn-toolbar" role="toolbar" aria-label="...">
-        <div class="btn-group" role="group" aria-label="...">
-          <button class="btn btn-md glyphicon glyphicon-play" aria-hidden="true" id="runcode" title="Run Code"></button>
+  <div id="editor" style="width:50%; float:left">
+    <ul class="nav nav-tabs" role="tablist" id="editortabs">
+      <li role="presentation" class="active"><a href="#tabcode" aria-controls="home" role="tab"
+          data-toggle="tab">app.js</a></li>
+      <li role="presentation"><a href="#tabenv" aria-controls="home" role="tab" data-toggle="tab">.env</a></li>
+    </ul>
+    <div class="tab-content" id="editortabcontents">
+      <div role="tabpanel" id="tabcode" class="tab-pane active center">
+        <div class="btn-toolbar" role="toolbar" aria-label="...">
+          <div class="btn-group" role="group" aria-label="...">
+            <button class="btn btn-md glyphicon glyphicon-play" aria-hidden="true" id="runcode"
+              title="Run Code"></button>
+          </div>
         </div>
-      </div>
-      <textarea id="code">
+        <textarea id="code">
 var tj = new TJBot(["led"], {}, {});
 tj.shine("green");</textarea>
-    </div>
-    <div role="tabpanel" id="tabenv" class="tab-pane">
-      <i>Include environment variables that can be accessed via process.env.____</i><br />
-      <textarea id="envcode">CONVERSATION_USERNAME=
-CONVERSATION_PASSWORD=
-CONVERSATION_WORKSPACE_ID=
-LANGUAGE_TRANSLATOR_USERNAME=
-LANGUAGE_TRANSLATOR_PASSWORD=
-SPEECH_TO_TEXT_USERNAME=
-SPEECH_TO_TEXT_PASSWORD=
-TEXT_TO_SPEECH_USERNAME=
-TEXT_TO_SPEECH_PASSWORD=
-TONE_ANALYZER_USERNAME=
-TONE_ANALYZER_PASSWORD=
-VISUAL_RECOGNITION_API_KEY=
-</textarea>
+      </div>
+      <div role="tabpanel" id="tabenv" class="tab-pane">
+        <i>Include environment variables that can be accessed via process.env.____</i><br />
+        <textarea id="envcode"></textarea>
+      </div>
     </div>
   </div>
-</div>
 
-<div style="width:50%; float:right">
+  <div style="width:50%; float:right">
 
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist" id="tablist">
-    <li role="presentation" id="first" class="active"><a href="#tjbot" aria-controls="home" role="tab" data-toggle="tab">TJBot</a></li>
-    <li role="presentation"><a href="#logtab" aria-controls="home" role="tab" data-toggle="tab">Console</a></li>
-    <li role="presentation"><a href="#cameratab" aria-controls="home" role="tab" data-toggle="tab">Camera</a></li>
-    <li role="presentation"><a href="#docs" aria-controls="home" role="tab" data-toggle="tab">Docs</a></li>
-  </ul>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="tablist">
+      <li role="presentation" id="first" class="active"><a href="#tjbot" aria-controls="home" role="tab"
+          data-toggle="tab">TJBot</a></li>
+      <li role="presentation"><a href="#logtab" aria-controls="home" role="tab" data-toggle="tab">Console</a></li>
+      <li role="presentation"><a href="#cameratab" aria-controls="home" role="tab" data-toggle="tab">Camera</a></li>
+      <li role="presentation"><a href="#docs" aria-controls="home" role="tab" data-toggle="tab">Docs</a></li>
+    </ul>
 
-  <!-- Tab panes -->
-  <div class="tab-content" id="tabcontent">
-    <div role="tabpanel" id="tjbot" class="tab-pane active center">
-      <svg width="400" height="400">
-       <rect x="92" y="84" width="16" height="16" id="led" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <rect y="100" width="200" height="150" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <rect x="200" y="260" width="50" height="25" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <rect x="225" y="235" width="25" id="armup" height="50" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <rect x="225" y="260" width="25" id="armdown" height="50" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <rect y="260" width="200" height="30" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <rect x="40" y="290" width="40" height="50" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <rect x="120" y="290" width="40" height="50" style="fill:rgb(128,128,128);stroke-width:3;stroke:rgb(0,0,0)" />
-       <circle cX="60" cY="230" r="10" style="fill:black;stroke-width:3;stroke:rgb(0,0,0)" />
-       <circle cX="140" cY="230" r="10" style="fill:black;stroke-width:3;stroke:rgb(0,0,0)" />
-      </svg>
-    </div>
-    <div role="tabpanel" id="logtab" class="tab-pane">
-      <div class="btn-toolbar" role="toolbar" aria-label="...">
-        <div class="btn-group" role="group" aria-label="...">
-          <button class="btn btn-sm btn-danger _clearlog">Clear Log</button>
-        </div>
+    <!-- Tab panes -->
+    <div class="tab-content" id="tabcontent">
+      <div role="tabpanel" id="tjbot" class="tab-pane active center">
+        <svg width="400" height="400">
+          <rect x="92" y="84" width="16" height="16" id="led" style="fill:rgb(128,128,128)" />
+          <rect x="2" y="100" width="200" height="150" style="fill:rgb(128,128,128)" />
+          <rect x="200" y="260" width="50" height="25" style="fill:rgb(128,128,128)" />
+          <rect x="225" y="235" width="25" id="armup" height="50" style="fill:rgb(128,128,128)" />
+          <rect x="225" y="260" width="25" id="armdown" height="50" style="fill:rgb(128,128,128)" />
+          <rect x="2" y="260" width="200" height="30" style="fill:rgb(128,128,128);" />
+          <rect x="40" y="290" width="40" height="50" style="fill:rgb(128,128,128);" />
+          <rect x="120" y="290" width="40" height="50" style="fill:rgb(128,128,128);" />
+          <circle cX="60" cY="230" r="10" style="fill:black" />
+          <circle cX="140" cY="230" r="10" style="fill:black;" />
+        </svg>
       </div>
-      <br />
-      <pre id="log"></pre>
-    </div>
-    <div role="tabpanel" id="cameratab" class="tab-pane">
+      <div role="tabpanel" id="logtab" class="tab-pane">
+        <div class="btn-toolbar" role="toolbar" aria-label="...">
+          <div class="btn-group" role="group" aria-label="...">
+            <button class="btn btn-sm btn-danger _clearlog">Clear Log</button>
+          </div>
+        </div>
+        <br />
+        <pre id="log"></pre>
+      </div>
+      <div role="tabpanel" id="cameratab" class="tab-pane" style="overflow-y: scroll;">
+        <h3>Webcam Stream (live)</h3>
+        <video autoplay="true" id="videoElement" width="400px" height="300px"></video>
+        <br>
+        <button id="take_snapshot" class="btn btn-md">Take Snapshot</button>
+        <button id="download_snapshot" class="btn btn-md">Download Snapshot</button>
+        <br>
+        <h3>Snapshot</h3>
+        <canvas id="canvas" width="400px" height="300px" style="border: 1px solid black"></canvas>
+        <br>
 
-    </div>
-    <div role="tabpanel" id="docs" class="tab-pane" style="padding: 10px">
-      <h2>Docs</h2>
-      <p>This TJBot simulator provides an emulated environment where you can control a virtual TJBot. It has been built to support basic code samples and gives just some of the freedom that programming on the real TJBot provides. However, this simulator doesn't provide all the same things the Node.js environment running on the Raspberry Pi does. The following documentation describes the methods available and how to use them. Enjoy!</p>
-      <p>Service credentials are sent over the internet to a proxy site that relays them to the respective Watson services. Code and credentials are only stored locally in the browser.</p>
+        <script>
+          var video = document.querySelector("#videoElement");
 
-      <h3><code>analyzeTone(text).then(response => {...})</code></h3>
-      <p>Analyzes emotions, language style and social tones</p>
-      <pre class="insert">var tj = new TJBot([], {}, {
+          if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+              .then(function (stream) {
+                video.srcObject = stream;
+              })
+              .catch(function (err0r) {
+                console.log("Something went wrong!");
+              });
+          }
+
+          $("#download_snapshot").click(function(event){
+            var link = document.createElement('a');
+            link.download = new Date().getMilliseconds().toString()+'.png';
+            link.href = document.getElementById('canvas').toDataURL()
+            link.click();
+
+            link.remove()
+          });
+
+          $("#take_snapshot").click(function(event){
+            var v = document.getElementById("videoElement");
+            canvas = document.getElementById("canvas");
+            context = canvas.getContext("2d");
+            w = canvas.width;
+            h = canvas.height;
+            context.drawImage(v,0,0,w,h);
+          })
+
+        </script>
+      </div>
+      <div role="tabpanel" id="docs" class="tab-pane" style="padding: 10px; overflow-y: scroll;">
+        <h2>Docs</h2>
+        <p>This TJBot simulator provides an emulated environment where you can control a virtual TJBot. It has been
+          built to support basic code samples and gives just some of the freedom that programming on the real TJBot
+          provides. However, this simulator doesn't provide all the same things the Node.js environment running on the
+          Raspberry Pi does. The following documentation describes the methods available and how to use them. Enjoy!</p>
+        <p>Service credentials are sent over the internet to a proxy site that relays them to the respective Watson
+          services. Code and credentials are only stored locally in the browser.</p>
+
+        <h3><code>analyzeTone(text).then(response => {...})</code></h3>
+        <p>Analyzes emotions, language style and social tones</p>
+        <pre class="insert">var tj = new TJBot([], {}, {
   tone_analyzer: {
     username: process.env.TONE_ANALYZER_USERNAME,
     password: process.env.TONE_ANALYZER_PASSWORD
@@ -133,9 +163,9 @@ tj.analyzeTone(text).then(response => {
   console.log(response);
 });</pre>
 
-      <h3><code>converse(workspaceId, text, response => {...})</code></h3>
-      <p>Process the natural language input using Watson Conversation</p>
-      <pre class="insert">var tj = new TJBot([], {
+        <h3><code>converse(workspaceId, text, response => {...})</code></h3>
+        <p>Process the natural language input using Watson Conversation</p>
+        <pre class="insert">var tj = new TJBot([], {
   robot: {
     gender: "male"
   }
@@ -151,9 +181,9 @@ tj.converse(process.env.CONVERSATION_WORKSPACE_ID, "hello", response => {
   console.log(response)
 });</pre>
 
-      <h3><code>identifyLanguage(text).then(response => {...})</code></h3>
-      <p>Identifies which languages the text may be</p>
-      <pre class="insert">var tj = new TJBot([], {}, {
+        <h3><code>identifyLanguage(text).then(response => {...})</code></h3>
+        <p>Identifies which languages the text may be</p>
+        <pre class="insert">var tj = new TJBot([], {}, {
   language_translator: {
     username: process.env.LANGUAGE_TRANSLATOR_USERNAME,
     password: process.env.LANGUAGE_TRANSLATOR_PASSWORD
@@ -164,9 +194,9 @@ tj.identifyLanguage("hello").then(response => {
   console.log(response);
 });</pre>
 
-      <h3><code>listen(cb)</code></h3>
-      <p>Listens to the microphone and returns the text to the callback</p>
-      <pre class="insert">var tj = new TJBot(["microphone"], {}, {
+        <h3><code>listen(cb)</code></h3>
+        <p>Listens to the microphone and returns the text to the callback</p>
+        <pre class="insert">var tj = new TJBot(["microphone"], {}, {
   speech_to_text: {
     username: process.env.SPEECH_TO_TEXT_USERNAME,
     password: process.env.SPEECH_TO_TEXT_PASSWORD
@@ -178,21 +208,22 @@ tj.listen((text) => {
   t.stopListening();
 });</pre>
 
-      <h3><code>lowerArm()</code></h3>
-      <p>Moves the arm down</p>
-      <pre class="insert">var tj = new TJBot(["servo"], {}, {});
+        <h3><code>lowerArm()</code></h3>
+        <p>Moves the arm down</p>
+        <pre class="insert">var tj = new TJBot(["servo"], {}, {});
 tj.lowerArm();</pre>
 
-      <h3><code>raiseArm()</code></h3>
-      <p>Moves the arm up</p>
-      <pre class="insert">var tj = new TJBot(["servo"], {}, {});
+        <h3><code>raiseArm()</code></h3>
+        <p>Moves the arm up</p>
+        <pre class="insert">var tj = new TJBot(["servo"], {}, {});
 tj.raiseArm();</pre>
 
-      <h3><code>see()</code></h3>
-      <p>Takes a photo and recognizes objects and colors</p>
-      <pre class="insert">var tj = new TJBot(["camera"], {}, {
+        <h3><code>see()</code></h3>
+        <p>Takes a photo and recognizes objects and colors</p>
+        <pre class="insert">var tj = new TJBot(["camera"], {}, {
   visual_recognition: {
-    api_key: process.env.VISUAL_RECOGNITION_API_KEY
+    iam_apikey: process.env.VISUAL_RECOGNITION_IAM_APIKEY,
+    iam_url: process.env.VISUAL_RECOGNITION_URL
   }
 });
 
@@ -200,14 +231,14 @@ tj.see(objects => {
   console.log(objects);
 });</pre>
 
-      <h3><code>shine(color)</code></h3>
-      <p>Shines the LED a color</p>
-      <pre class="insert">var tj = new TJBot(["led"], {}, {});
+        <h3><code>shine(color)</code></h3>
+        <p>Shines the LED a color</p>
+        <pre class="insert">var tj = new TJBot(["led"], {}, {});
 tj.shine("red");</pre>
 
-      <h3><code>speak(text)</code></h3>
-      <p>Shines the LED a color</p>
-      <pre class="insert">var tj = new TJBot(["speaker"], {
+        <h3><code>speak(text)</code></h3>
+        <p>Shines the LED a color</p>
+        <pre class="insert">var tj = new TJBot(["speaker"], {
     robot: {
       gender: "male"
     },
@@ -223,7 +254,7 @@ tj.shine("red");</pre>
 });
 
 tj.speak("hello");</pre>
-<pre class="insert">var tj = new TJBot(["speaker"], {
+        <pre class="insert">var tj = new TJBot(["speaker"], {
     robot: {
       gender: "female"
     },
@@ -239,7 +270,7 @@ tj.speak("hello");</pre>
 });
 
 tj.speak("bonjour");</pre>
-<pre class="insert">var tj = new TJBot(["speaker"], {
+        <pre class="insert">var tj = new TJBot(["speaker"], {
     robot: {
       gender: "female"
     },
@@ -256,9 +287,9 @@ tj.speak("bonjour");</pre>
 
 tj.speak("hello. how are you today?");</pre>
 
-      <h3><code>translate(text, sourceLanguage, targetLanguage).then(translation => {...})</code></h3>
-      <p>Translates content from one language into another</p>
-      <pre class="insert">var tj = new TJBot([], {}, {
+        <h3><code>translate(text, sourceLanguage, targetLanguage).then(translation => {...})</code></h3>
+        <p>Translates content from one language into another</p>
+        <pre class="insert">var tj = new TJBot([], {}, {
   language_translator: {
     username: process.env.LANGUAGE_TRANSLATOR_USERNAME,
     password: process.env.LANGUAGE_TRANSLATOR_PASSWORD
@@ -268,14 +299,23 @@ tj.speak("hello. how are you today?");</pre>
 tj.translate("Hello", "en", "fr")
   .then((response) => console.log(response.translations[0].translation));</pre>
 
-      <h3><code>wave()</code></h3>
-      <p>Waves the arm up and down</p>
-      <pre class="insert">var tj = new TJBot(["servo"], {}, {});
+        <h3><code>wave()</code></h3>
+        <p>Waves the arm up and down</p>
+        <pre class="insert">var tj = new TJBot(["servo"], {}, {});
 tj.wave();</pre>
+      </div>
     </div>
   </div>
   </div>
-</div>
 
 </body>
+
+<script src="codemirror/lib/codemirror.js"></script>
+<script src="codemirror/mode/javascript/javascript.js"></script>
+<script src="bower_components/watson-speech/dist/watson-speech.js"></script>
+<script src="js/tjbot.js"></script>
+<script src="js/tjbotlistener.js"></script>
+<script src="js/watson.js"></script>
+<script src="js/app.js"></script>
+
 </html
